@@ -20,12 +20,12 @@ public class FixedSizeList<T> implements P6List<T> {
 
 	@Override
 	public T removeBack() {
-		if (this.size() == 0) {
+		if (this.size()==-0) {
 			throw new EmptyListError();
 		}
+		T value = this.getIndex(fill-1);
+		this.array[fill-1] = null;
 		fill--;
-		T value = this.getIndex(fill);
-		this.array[fill] = null;
 		return value;
 	}
 
