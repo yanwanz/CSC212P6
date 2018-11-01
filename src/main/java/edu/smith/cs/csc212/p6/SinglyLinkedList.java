@@ -2,8 +2,8 @@ package edu.smith.cs.csc212.p6;
 
 import java.util.Iterator;
 
+import edu.smith.cs.csc212.p6.errors.BadIndexError;
 import edu.smith.cs.csc212.p6.errors.EmptyListError;
-import edu.smith.cs.csc212.p6.errors.P6NotImplemented;
 
 public class SinglyLinkedList<T> implements P6List<T>, Iterable<T> {
 	/**
@@ -21,12 +21,30 @@ public class SinglyLinkedList<T> implements P6List<T>, Iterable<T> {
 
 	@Override
 	public T removeBack() {
-		throw new P6NotImplemented();
+		return removeIndex(this.size()-1);
 	}
 
 	@Override
 	public T removeIndex(int index) {
-		throw new P6NotImplemented();
+		checkNotEmpty();
+		
+		if (index == 0) {
+			return removeFront();
+		}
+		
+		int at = 0;
+		T removed = null;
+		for (Node<T> current = start; current != null; current = current.next) {
+			if (at == index-1) {
+				removed = current.next.value;
+				current.next = current.next.next;
+				return removed;
+			}
+			at++;
+		}
+		
+		throw new BadIndexError();
+		
 	}
 
 	@Override
@@ -36,12 +54,29 @@ public class SinglyLinkedList<T> implements P6List<T>, Iterable<T> {
 
 	@Override
 	public void addBack(T item) {
-		throw new P6NotImplemented();
+		addIndex(item, this.size());
 	}
 
 	@Override
 	public void addIndex(T item, int index) {
-		throw new P6NotImplemented();
+		if (this.size() < index) {
+			throw new BadIndexError();
+		}
+		
+		Node<T> added = new Node<T>(item, null);
+		
+		if(index==0) {
+			this.start = added;
+		}
+		int at = 0;
+		for (Node<T> current = start; current != null; current = current.next) {
+			if (at == index-1) {
+				added.next = current.next;
+				current.next = added;
+			}
+			at++;
+		}
+		
 	}
 
 	@Override
@@ -51,12 +86,21 @@ public class SinglyLinkedList<T> implements P6List<T>, Iterable<T> {
 
 	@Override
 	public T getBack() {
-		throw new P6NotImplemented();
+		return this.getIndex(this.size()-1);
 	}
 
 	@Override
 	public T getIndex(int index) {
-		throw new P6NotImplemented();
+		// From SList.java in the test lab
+		int at = 0;
+		for (Node<T> current = start; current != null; current = current.next) {
+			if (at == index) {
+				return current.value;
+			}
+			at++;
+		}
+		// We couldn't find it, throw an exception!
+		throw new BadIndexError();
 	}
 
 	@Override
@@ -70,7 +114,11 @@ public class SinglyLinkedList<T> implements P6List<T>, Iterable<T> {
 
 	@Override
 	public boolean isEmpty() {
-		throw new P6NotImplemented();
+		if (this.size() == 0) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 	/**

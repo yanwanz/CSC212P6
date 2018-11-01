@@ -1,7 +1,6 @@
 package edu.smith.cs.csc212.p6;
 
 import edu.smith.cs.csc212.p6.errors.EmptyListError;
-import edu.smith.cs.csc212.p6.errors.P6NotImplemented;
 
 public class GrowableList<T> implements P6List<T> {
 	public static final int START_SIZE = 32;
@@ -45,25 +44,41 @@ public class GrowableList<T> implements P6List<T> {
 
 	@Override
 	public void addFront(T item) {
-		addIndex(item, 0);
+		addIndex(item,0);
 	}
 
 	@Override
 	public void addBack(T item) {
-		// I've implemented part of this for you.
+		
 		if (fill >= this.array.length) { 
-			throw new P6NotImplemented();
+			addIndex(item,fill-1);
 		}
 		this.array[fill++] = item;
 	}
 
 	@Override
 	public void addIndex(T item, int index) {
-		if (fill < array.length) {
-			this.array[fill] = item;
+		if (fill < this.array.length) {
+			for (int i = fill-1; i > -1; i--) {
+				if (i>=index) {
+					array[i+1] = array[i];
+				}
+			}
+			this.array[index] = item;
 			fill++;
-		}else {
-			
+		} else {
+			int newSize = fill * 2;
+			Object[] newArray = new Object[newSize];
+			for (int i = 0; i< this.array.length; i++) {
+				if (i < index) {
+					newArray[i] = this.array[i];
+				}else if(i >= index){
+					newArray[i+1]= this.array[i];
+				}
+			}
+			newArray[index] = item;
+			this.array = newArray;
+			fill++;
 		}
 	}
 	
